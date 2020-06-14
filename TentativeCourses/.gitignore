@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/csharp,visualstudio,aspnetcore,dotnetcore,test
-# Edit at https://www.toptal.com/developers/gitignore?templates=csharp,visualstudio,aspnetcore,dotnetcore,test
+# Created by https://www.toptal.com/developers/gitignore/api/csharp,dotnetcore,aspnetcore,visualstudio
+# Edit at https://www.toptal.com/developers/gitignore?templates=csharp,dotnetcore,aspnetcore,visualstudio
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -491,86 +491,6 @@ obj/
 /node_modules
 /wwwroot/node_modules
 
-### Test ###
-### Ignore all files that could be used to test your code and
-### you wouldn't want to push
-
-# Reference https://en.wikipedia.org/wiki/Metasyntactic_variable
-
-# Most common
-*foo
-*bar
-*fubar
-*foobar
-*baz
-
-# Less common
-*qux
-*quux
-*bongo
-*bazola
-*ztesch
-
-# UK, Australia
-*wibble
-*wobble
-*wubble
-*flob
-*blep
-*blah
-*boop
-*beep
-
-# Japanese
-*hoge
-*piyo
-*fuga
-*hogera
-*hogehoge
-
-# Portugal, Spain
-*fulano
-*sicrano
-*beltrano
-*mengano
-*perengano
-*zutano
-
-# France, Italy, the Netherlands
-*toto
-*titi
-*tata
-*tutu
-*pipppo
-*pluto
-*paperino
-*aap
-*noot
-*mies
-
-# Other names that would make sense
-*tests
-*testsdir
-*testsfile
-*testsfiles
-*test
-*testdir
-*testfile
-*testfiles
-*testing
-*testingdir
-*testingfile
-*testingfiles
-*temp
-*tempdir
-*tempfile
-*tempfiles
-*tmp
-*tmpdir
-*tmpfile
-*tmpfiles
-*lol
-
 ### VisualStudio ###
 
 # User-specific files
@@ -729,4 +649,4 @@ obj/
 
 # Ionide (cross platform F# VS Code tools) working folder
 
-# End of https://www.toptal.com/developers/gitignore/api/csharp,visualstudio,aspnetcore,dotnetcore,test
+# End of https://www.toptal.com/developers/gitignore/api/csharp,dotnetcore,aspnetcore,visualstudio
