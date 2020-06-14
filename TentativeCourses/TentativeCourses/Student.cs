@@ -27,24 +27,5 @@ namespace TentativeCourses
             Days = new List<Schedule>();
             Days.Add( _day);
         }
-
-        /// <summary>Get a list of teachers and schedules for schedules that match with the student.
-        /// <paramref name="teachers"/>
-        /// </summary>
-        internal List<(Teacher, Schedule)> GetPossiblesTeachers(List<Teacher> teachers)
-        {
-            List<(Teacher, Schedule)> possiblesTeacher = new List<(Teacher, Schedule)>();
-            foreach (Teacher t in teachers)
-            {
-                foreach (Schedule d in t.Days)
-                {
-                    if (Days.Any(day => day.isSameMoment(d)))
-                    {
-                        possiblesTeacher.Add((t, d));
-                    }
-                }
-            }
-            return possiblesTeacher;
-        }
     }
 }

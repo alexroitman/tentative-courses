@@ -2,47 +2,50 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace TentativeCourses
 {
 
     public class CoursesGenerator
     {
-        public static ResultCourseGenerator Generate(List<Student> students, List<Teacher> teachers)
+        public static CourseResultGenerator Generate(List<Student> students, List<Teacher> teachers)
         {
             List<Course> courses = new List<Course>();
-            List<Student> studentsNoAssign = new List<Student>();
-            foreach (Student s in students)
+            List<Student> unassignedStudent = new List<Student>();
+            foreach (Student student in students)
             {
-                List<(Teacher, Schedule)> possiblesTeachers = s.GetPossiblesTeachers(teachers);
-                if (possiblesTeachers.Any())
+                List<(Teacher, Schedule)> possibleTeachers = GetTeachersWithStudentSchedules(teachers, student);
+                if (possibleTeachers.Any())
                 {
-                    List<Course> possibleCourses = GetPossibleCourse(courses, possiblesTeachers);
-                    
-                    if (possibleCourses.Any())
+                    List<Course> possibleCourses = GetPossibleCourse(courses, possibleTeachers);
+                    Course course = possibleCourses.FirstOrDefault(oneCourse => Validate(oneCourse, student));//this filter just the course with  the course conditions
+                    if (course != null)
                     {
-                        possibleCourses= possibleCourses.Where(x => Validate(x, s)).ToList();//this filter just the course with  the course conditions
-                        if (possibleCourses.Any())
-                        {
-                            possibleCourses.First().AddStudent(s);
-                            
-                        }
-                        else
-                        {//if there are any course that satisfy all the contitions
-                            studentsNoAssign.Add(s);
-                        }
+                        course.AddStudent(student);
                     }
-                    else
+                    else//if there are any course that satisfy all the contitions
                     {
-                        studentsNoAssign.Add(s);
+
+                        unassignedStudent.Add(student);
                     }
                 }
                 else//if there are any schedule for this student
                 {
-                    studentsNoAssign.Add(s);
+                    unassignedStudent.Add(student);
                 }
             }
-            return new ResultCourseGenerator() { courses = courses, rejected = studentsNoAssign };
+            return new CourseResultGenerator() { Courses = courses,Rejected = unassignedStudent };
+        }
+        /// <summary>Get a list of teachers and schedules for schedules that match with the student.
+        /// <paramref name="teachers"/>
+        /// <paramref name="student"/>
+        /// </summary>
+        private static List<(Teacher, Schedule)> GetTeachersWithStudentSchedules(List<Teacher> teachers, Student student)
+        {
+            List<(Teacher, Schedule)> possibleTeachers = teachers.SelectMany(teacher => student.Days.Select(day => (Teacher: teacher, Schedule: day))).ToList();
+            possibleTeachers = possibleTeachers.Where(tuple => student.Days.Any(day => day.isSameMoment(tuple.Item2))).ToList();
+            return possibleTeachers;
         }
 
         private static bool Validate(Course course, Student s)
