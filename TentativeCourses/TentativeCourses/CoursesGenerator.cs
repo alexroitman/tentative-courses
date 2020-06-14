@@ -13,44 +13,34 @@ namespace TentativeCourses
         {
             List<Course> courses = new List<Course>();
             List<Student> unassignedStudent = new List<Student>();
+            List<Course> possibleCourses = GeneratePossibleCourses(teachers);
             foreach (Student student in students)
             {
-                List<(Teacher, Schedule)> possibleTeachers = GetTeachersWithStudentSchedules(teachers, student);
-                if (possibleTeachers.Any())
+                Course course = possibleCourses.FirstOrDefault(oneCourse => Validate(oneCourse, student));//this filter just the course with  the course conditions
+                if (course != null)
                 {
-                    List<Course> possibleCourses = GetPossibleCourse(courses, possibleTeachers);
-                    Course course = possibleCourses.FirstOrDefault(oneCourse => Validate(oneCourse, student));//this filter just the course with  the course conditions
-                    if (course != null)
-                    {
-                        course.AddStudent(student);
-                    }
-                    else//if there are any course that satisfy all the contitions
-                    {
-
-                        unassignedStudent.Add(student);
-                    }
+                    course.AddStudent(student);
                 }
                 else//if there are any schedule for this student
                 {
                     unassignedStudent.Add(student);
                 }
             }
-            return new CourseResultGenerator() { Courses = courses,Rejected = unassignedStudent };
+            courses = possibleCourses.Where(course => course.Students.Count != 0).ToList();
+            return new CourseResultGenerator() { Courses = courses, Rejected = unassignedStudent };
         }
         /// <summary>Get a list of teachers and schedules for schedules that match with the student.
         /// <paramref name="teachers"/>
         /// <paramref name="student"/>
         /// </summary>
-        private static List<(Teacher, Schedule)> GetTeachersWithStudentSchedules(List<Teacher> teachers, Student student)
+        private static List<Course> GeneratePossibleCourses(List<Teacher> teachers)
         {
-            List<(Teacher, Schedule)> possibleTeachers = teachers.SelectMany(teacher => student.Days.Select(day => (Teacher: teacher, Schedule: day))).ToList();
-            possibleTeachers = possibleTeachers.Where(tuple => student.Days.Any(day => day.isSameMoment(tuple.Item2))).ToList();
-            return possibleTeachers;
+            return teachers.SelectMany(teacher => teacher.Days.Select(day => new Course(teacher, new List<Student>(), day))).ToList();
         }
 
-        private static bool Validate(Course course, Student s)
+        private static bool Validate(Course course, Student student)
         {
-            return course.Students.Count < 6 && (course.Modality == Modality.NonAssigned || course.Modality == s.Modality) && (course.Level == LevelOfKnoweldge.NonAssigned || course.Level == s.Level);
+            return student.Days.Any(day => day.isSameMoment(course.Day)) && course.Students.Count < 6 && (course.Modality == Modality.NonAssigned || course.Modality == student.Modality) && (course.Level == LevelOfKnoweldge.NonAssigned || course.Level == student.Level);
         }
 
 
