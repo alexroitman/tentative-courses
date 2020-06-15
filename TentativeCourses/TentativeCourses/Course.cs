@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TentativeCourses
 {
     public class Course
     {
         public Teacher Teacher { get; set; }
-        public List<Student> Students{ get; set; }
+        public List<StudentInCourse> Students{ get; set; }
         public Schedule Day{ get; set; }
         public Modality Modality { get; set; }
         public LevelOfKnoweldge Level { get; set; }
 
-        public Course(Teacher _teacher, List<Student> _student, Schedule _day)
+        public Course(Teacher _teacher, List<StudentInCourse> _student, Schedule _day)
         {
             Teacher = _teacher;
             Students = _student;
@@ -32,7 +33,8 @@ namespace TentativeCourses
         {
             ChangeLevel(s.Level);
             ChangeModality(s.Modality);
-            Students.Add(s);
+            bool isConfirm = s.Days.Any(day => day.isSameMoment(Day));
+            Students.Add(new StudentInCourse(s,isConfirm));
 
         }
 

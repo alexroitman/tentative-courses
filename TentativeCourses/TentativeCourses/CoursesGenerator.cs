@@ -23,6 +23,7 @@ namespace TentativeCourses
                 }
                 else//if there are any schedule for this student
                 {
+
                     unassignedStudent.Add(student);
                 }
             }
@@ -35,36 +36,15 @@ namespace TentativeCourses
         /// </summary>
         private static List<Course> GeneratePossibleCourses(List<Teacher> teachers)
         {
-            return teachers.SelectMany(teacher => teacher.Days.Select(day => new Course(teacher, new List<Student>(), day))).ToList();
+            return teachers.SelectMany(teacher => teacher.Days.Select(day => new Course(teacher, new List<StudentInCourse>(), day))).ToList();
         }
 
         private static bool Validate(Course course, Student student)
         {
-            return student.Days.Any(day => day.isSameMoment(course.Day)) && course.Students.Count < 6 && (course.Modality == Modality.NonAssigned || course.Modality == student.Modality) && (course.Level == LevelOfKnoweldge.NonAssigned || course.Level == student.Level);
+            return student.Days.Any(day => (day.isSameMoment(course.Day)) || day.DiffersOneHour(course.Day)) && course.Students.Count < 6 && (course.Modality == Modality.NonAssigned || course.Modality == student.Modality) && (course.Level == LevelOfKnoweldge.NonAssigned || course.Level == student.Level);
         }
 
 
-        /// <summary>
-        /// Get (and create if necessary) the list of the possible existent courses that fit in the teacher schedule
-        /// </summary>
-        /// <param name="courses"></param>
-        /// <param name="teachersInDays"></param>
-        /// <returns></returns>
-        private static List<Course> GetPossibleCourse(List<Course> courses, List<(Teacher, Schedule)> teachersInDays)
-        {
-            List<Course> possiblesCourses = new List<Course>();
-
-            foreach ((Teacher, Schedule) teacherInDay in teachersInDays)
-            {
-                Course c = courses.Where(course => course.Teacher == teacherInDay.Item1 && course.Day.isSameMoment(teacherInDay.Item2)).FirstOrDefault();
-                if (c == null)
-                {
-                    c = new Course(teacherInDay.Item1, new List<Student>(), teacherInDay.Item2);
-                    courses.Add(c);
-                }
-                possiblesCourses.Add(c);
-            }
-            return possiblesCourses;
-        }
+        
     }
 }
