@@ -32,9 +32,10 @@ namespace TentativeCoursesTest
             List<Student> studentList = new List<Student>();
             studentList.Add(student);
 
+            CourseResultGenerator result = CoursesGenerator.Generate(studentList, teacherList);
 
-            Assert.AreEqual(teacher, CoursesGenerator.Generate(studentList, teacherList).Courses.First().Teacher);
-            Assert.AreEqual(student, CoursesGenerator.Generate(studentList, teacherList).Courses.First().Students.Select(s=>s.Student).First());
+            Assert.AreEqual(teacher, result.Courses.First().Teacher);
+            Assert.AreEqual(student, result.Courses.First().Students.Select(s=>s.Student).First());
 
 
 
@@ -60,9 +61,10 @@ namespace TentativeCoursesTest
             studentList.Add(student6);
             studentList.Add(student7);
 
+            CourseResultGenerator result = CoursesGenerator.Generate(studentList, teacherList);
 
-            Assert.AreEqual(6, CoursesGenerator.Generate(studentList, teacherList).Courses.First().Students.Count);
-            Assert.AreEqual(1, CoursesGenerator.Generate(studentList, teacherList).Rejected.Count);
+            Assert.AreEqual(6, result.Courses.First().Students.Count);
+            Assert.AreEqual(1, result.Rejected.Count);
 
         }
 
@@ -87,9 +89,10 @@ namespace TentativeCoursesTest
             studentList.Add(student5);
             studentList.Add(student6);
 
-
-            Assert.AreEqual(3, CoursesGenerator.Generate(studentList, teacherList).Courses.First().Students.Count);
-            Assert.AreEqual(LevelOfKnoweldge.Intermediate, CoursesGenerator.Generate(studentList, teacherList).Courses.First().Level);
+           CourseResultGenerator result= CoursesGenerator.Generate(studentList, teacherList);
+            Assert.AreEqual(3, result.Courses.First().Students.Count);
+            Assert.AreEqual(LevelOfKnoweldge.Intermediate, result.Courses.First().Level);
+            Assert.IsTrue(result.Courses.First().Students.All(student=>student.Student.Level== LevelOfKnoweldge.Intermediate));
         }
 
         [TestMethod]
@@ -118,10 +121,10 @@ namespace TentativeCoursesTest
             studentList.Add(student6);
             studentList.Add(student7);
 
-
-            Assert.AreEqual(6, CoursesGenerator.Generate(studentList, teacherList).Courses.First().Students.Count);
-            Assert.AreEqual(2, CoursesGenerator.Generate(studentList, teacherList).Courses.Count);
-            Assert.AreEqual(0, CoursesGenerator.Generate(studentList, teacherList).Rejected.Count);
+            CourseResultGenerator result = CoursesGenerator.Generate(studentList, teacherList);
+            Assert.AreEqual(6, result.Courses.First().Students.Count);
+            Assert.AreEqual(2, result.Courses.Count);
+            Assert.AreEqual(0, result.Rejected.Count);
         }
 
 
@@ -153,6 +156,12 @@ namespace TentativeCoursesTest
         public void CreateInvalidDate()
         {
             new Schedule(DayOfWeek.Sunday, new TimeSpan(17, 0, 0));
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInvalidTime()
+        {
+            new Schedule(DayOfWeek.Sunday, new TimeSpan(20, 0, 0));
         }
     }
 }
